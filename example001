@@ -1,0 +1,33 @@
+    public boolean equalsWhenOneCharRemoved(String x, String y) {
+
+        if (null == x || null == y) {
+            return false;
+        }
+
+        int sub = x.toCharArray().length - y.toCharArray().length;
+
+        if (1 != Math.abs(sub)) {
+            return false;
+        }
+
+        char[] arrSrc = (sub > 0)?y.toCharArray():x.toCharArray();
+        char[] arrDes = (sub > 0)?x.toCharArray():y.toCharArray();
+
+        Arrays.sort(arrSrc);
+        Arrays.sort(arrDes);
+
+        int pos = arrSrc.length;
+
+        for (int i = 0; i < arrSrc.length; i++) {
+            if (arrSrc[i] != arrDes[i]) {
+                pos = i;
+                break;
+            }
+        }
+
+        if (new StringBuilder(new String(arrDes)).deleteCharAt(pos).toString().equals(new String(arrSrc))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
