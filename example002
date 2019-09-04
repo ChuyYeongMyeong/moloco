@@ -76,16 +76,17 @@ public class TestMain {
 
         File file = new File(filePath);
 
+        List<Map<?, ?>> list = new ArrayList<Map<?, ?>>();
+
+        Map<String, HashSet<String>> userIdByproductId = new HashMap<String, HashSet<String>>();
+        Map<String, Integer> userCntByproductId = new HashMap<String, Integer>();
+        Map<String, BigDecimal> quantityByproductId = new HashMap<String, BigDecimal>();
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
 
             String s;
 
-            Map<String, HashSet<String>> userIdByproductId = new HashMap<String, HashSet<String>>();
-            Map<String, Integer> userCntByproductId = new HashMap<String, Integer>();
-            Map<String, BigDecimal> quantityByproductId = new HashMap<String, BigDecimal>();
-
-            List<Map<?, ?>> list = new ArrayList<Map<?, ?>>();
             while ((s = br.readLine()) != null) {
                 //System.out.println(s);
 
@@ -96,49 +97,49 @@ public class TestMain {
                 list.add(map);
             }
 
-            for (Map<?, ?> map : list) {
-                String userId = (String)map.get("user_id");
-                String productId = (String)map.get("product_id");
-                BigDecimal quantity = new BigDecimal((Integer)map.get("quantity"));
-
-                if (userIdByproductId.containsKey(productId)) {
-                    if (!userIdByproductId.get(productId).contains(userId)) {
-                        userIdByproductId.get(productId).add(userId);
-                    }
-                } else {
-                    HashSet<String> userIdList = new HashSet<String>();
-                    userIdList.add(userId);
-
-                    userIdByproductId.put(productId, userIdList);
-                }
-
-                if (quantityByproductId.containsKey(productId)) {
-                    quantityByproductId.get(productId).add(quantity);
-                } else {
-                    quantityByproductId.put(productId, quantity);
-                }
-            }
-
-            for (String key : userIdByproductId.keySet()) {
-                userCntByproductId.put(key, userIdByproductId.get(key).size());
-            }
-
-            //System.out.println(userIdByproductId);
-            System.out.println(userCntByproductId);
-            System.out.println(quantityByproductId);
-
-            Optional<Entry<String, Integer>> userIdByproductIdMaxEntry = userCntByproductId.entrySet().stream()
-                    .max(Comparator.comparing(Map.Entry::getValue));
-            Optional<Entry<String, BigDecimal>> quantityByproductIdMaxEntry = quantityByproductId.entrySet().stream()
-                    .max(Comparator.comparing(Map.Entry::getValue));
-
-            System.out.println(userIdByproductIdMaxEntry.get().getKey());
-            System.out.println(quantityByproductIdMaxEntry.get().getKey());
-
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        for (Map<?, ?> map : list) {
+            String userId = (String)map.get("user_id");
+            String productId = (String)map.get("product_id");
+            BigDecimal quantity = new BigDecimal((Integer)map.get("quantity"));
+
+            if (userIdByproductId.containsKey(productId)) {
+                if (!userIdByproductId.get(productId).contains(userId)) {
+                    userIdByproductId.get(productId).add(userId);
+                }
+            } else {
+                HashSet<String> userIdList = new HashSet<String>();
+                userIdList.add(userId);
+
+                userIdByproductId.put(productId, userIdList);
+            }
+
+            if (quantityByproductId.containsKey(productId)) {
+                quantityByproductId.get(productId).add(quantity);
+            } else {
+                quantityByproductId.put(productId, quantity);
+            }
+        }
+
+        for (String key : userIdByproductId.keySet()) {
+            userCntByproductId.put(key, userIdByproductId.get(key).size());
+        }
+
+        //System.out.println(userIdByproductId);
+        System.out.println(userCntByproductId);
+        System.out.println(quantityByproductId);
+
+        Optional<Entry<String, Integer>> userIdByproductIdMaxEntry = userCntByproductId.entrySet().stream()
+                .max(Comparator.comparing(Map.Entry::getValue));
+        Optional<Entry<String, BigDecimal>> quantityByproductIdMaxEntry = quantityByproductId.entrySet().stream()
+                .max(Comparator.comparing(Map.Entry::getValue));
+
+        System.out.println(userIdByproductIdMaxEntry.get().getKey());
+        System.out.println(quantityByproductIdMaxEntry.get().getKey());
     }
 
     public static void main(String[] args) {
